@@ -1,0 +1,91 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":null,"items":[{"name":"csharp","languageName":"C#","aliases":["c#","cs"]},{"name":"fsharp","languageName":"F#","aliases":["f#","fs"]},{"name":"pwsh","languageName":"PowerShell","aliases":["powershell"]},{"name":"javascript","languageName":"JavaScript","aliases":["js"]},{"name":"html","languageName":"HTML"},{"name":"sql","languageName":"SQL"},{"name":"kql","languageName":"KQL"},{"name":"mermaid","languageName":"Mermaid"},{"name":"http","languageName":"HTTP"},{"name":"value"}]}}
+
+#!pwsh
+
+if (-not(Test-Path "./tmp" -PathType Container))
+{
+    New-Item -ItemType Directory -Path "./tmp"
+}
+# /a-d : files only
+(cmd.exe /c "F:\Program Files\Everything 1.5a\es.exe" -instance 1.5a -export-csv "./tmp/all_files.csv" -size -date-modified -extension -date-format 1 -size-format 1 /a-d) | Out-String
+
+#!csharp
+
+#r "nuget: CsvHelper, 30.0.1"
+using CsvHelper;
+using System.IO;
+using System.Globalization;
+
+public static List<T> csv_read<T>(string filepath)
+{
+    List<T> list_data;
+    using (var reader = new StreamReader(filepath))
+    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+    {
+        list_data = csv.GetRecords<T>().ToList();
+    }
+    return list_data;
+}
+
+#!csharp
+
+record FileData
+{
+    public string filepath;
+    public string extension;
+}
+
+var list_filedata =
+csv_read<dynamic>(@".\tmp\all_files.csv")
+.Select(o => new FileData
+    {
+        filepath = o.Filename,
+        extension = ((string)o.Extension).ToLower()
+    })
+.ToList();
+
+list_filedata.Count
+
+#!csharp
+
+var list_archive_filepath =
+list_filedata
+.Where(filedata => filedata.extension is "zip" or "rar" or "7z")
+.Select(filedata => filedata.filepath)
+.ToList();
+
+Console.WriteLine(list_archive_filepath.Count);
+list_archive_filepath.Take(10).DisplayTable();
+
+#!csharp
+
+#r "nuget: CliWrap, 3.6.0"
+using CliWrap;
+using CliWrap.Buffered;
+
+string execute(string exe_filepath, string exe_params)
+    => Cli.Wrap(exe_filepath)
+    .WithArguments(exe_params)
+    .WithValidation(CommandResultValidation.None)
+    .ExecuteBufferedAsync()
+    .Task
+    .Result
+    .StandardOutput;
+
+#!csharp
+
+bool from_filepath_is_encrypted(string filepath)
+    => execute(@"F:\Program Files\7-Zip\7z.exe", @$"l -slt ""{filepath}""").Contains("Encrypted = +");
+
+#!csharp
+
+var list_encrypted_filepath =
+list_archive_filepath
+.Where(from_filepath_is_encrypted)
+.ToList();
+
+#!csharp
+
+list_encrypted_filepath.DisplayTable()
