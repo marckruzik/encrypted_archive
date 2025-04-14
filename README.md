@@ -1,4 +1,4 @@
-# Encrypted Archive
+# List Encrypted Archive
 
 A Polyglot Notebook to find all encrypted archives on disk. It uses Everything from voidtools to list all files in real time, export the data to a CSV file via a command line in a PowerShell cell, then tests all archives with 7-zip through C# cells.
 See links below to install all the necessary software.
@@ -19,4 +19,5 @@ See links below to install all the necessary software.
   - https://code.visualstudio.com/docs/languages/polyglot
 
 ## Usage
-In the notebook, there are a few hardcoded paths to software (`C:\Program Files\Something\something.exe`), replace those paths with your own.
+* In the notebook, there are a few hardcoded paths to software (`C:\Program Files\Something\something.exe`), replace those paths with your own.
+* Detected archives are files with extension `.zip`, `.rar` and `.7z`. You can edit the code to incolude more extensions.
