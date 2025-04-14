@@ -20,4 +20,4 @@ See links below to install all the necessary software.
 
 ## Usage
 * In the notebook, there are a few hardcoded paths to software (`C:\Program Files\Something\something.exe`), replace those paths with your own.
-* Detected archives are files with extension `.zip`, `.rar` and `.7z`. You can edit the code to incolude more extensions.
+* Detected archives are files with extension `.zip`, `.rar` and `.7z`. You can edit the notebook to include more extensions.
