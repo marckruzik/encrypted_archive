@@ -20,4 +20,9 @@ See links below to install all the necessary software.
 
 ## Usage
 * In the notebook, there are a few hardcoded paths to software (`C:\Program Files\Something\something.exe`), replace those paths with your own.
-* Detected archives are files with extension `.zip`, `.rar` and `.7z`. You can edit the notebook to include more extensions.
+* Detected archives are files with extension `.zip`, `.rar` and `.7z`. You can edit the notebook to include more extensions. It should work with all archives compatible with 7-zip.
+
+## Shortcomings
+* Here, "encrypted archives" are archives that can be opened (you can browse their directories and files), and contain at least 1 encrypted file.
+  * If the archive contains unencrypted files and at least 1 encrypted file, it will still be considered encrypted.
+* Some archives are fully encrypted, meaning that you cannot open or browse them at all. This notebook does not work with fully encrypted archives.
